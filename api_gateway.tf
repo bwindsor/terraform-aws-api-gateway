@@ -3,7 +3,9 @@ data "template_file" "api_spec" {
 
   vars = merge(var.openapi_spec_variables, {
     api_execution_role_arn = aws_iam_role.iam_for_api_gateway.arn
-    access_control_allow_origin_response_template = length(var.allowed_origins) > 0 ? "#set($origin = $input.params().header.get(\\\"Origin\\\"))\\n\\n#if(${join(" || ", formatlist("$origin == \\\"%s\\\"", var.allowed_origins))})\\n#set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\\n#end" : ""
+    options = templatefile("${path.module}/options.yaml", {
+      access_control_allow_origin = length(var.allowed_origins) > 0 ? "#set($origin = $input.params().header.get(\\\"Origin\\\"))\\n\\n#if(${join(" || ", formatlist("$origin == \\\"%s\\\"", var.allowed_origins))})\\n#set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\\n#end" : ""
+    })
   })
 }
 

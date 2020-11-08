@@ -18,8 +18,8 @@ variable "openapi_spec_yaml_template" {
 Open API YAML template describing the API. If you do not wish to use a template, just provide the ready yaml file without any sub variables
 
 The following substitution variables can be used:
-  * access_control_allow_origin_response_template - will be completed with a response template which puts on the appropriate CORS headers for OPTIONS responses
   * api_execution_role_arn - will be completed with the ARN of the role assumed by API gateway
+  * options - will be completed with a full OPTIONS method configuration with appropriate CORS headers
 EOF
   type = string
 }
