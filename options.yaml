@@ -11,7 +11,7 @@ options: {
           method.response.header.Access-Control-Max-Age: "'600'",
           method.response.header.Access-Control-Allow-Credentials: "'true'",
           method.response.header.Access-Control-Allow-Methods: "'GET,PUT,PATCH,POST,DELETE,OPTIONS'",
-          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Tenant-Id'",
+          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Tenant-Id'"
         },
         responseTemplates: {
           application/json: "${access_control_allow_origin}"
@@ -29,5 +29,6 @@ options: {
         Access-Control-Max-Age: { schema: { type: string } },
         Access-Control-Allow-Credentials: { schema: { type: string } }
       }
+    }
   }
 }
