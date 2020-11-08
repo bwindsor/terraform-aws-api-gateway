@@ -1,7 +1,17 @@
+data "template_file" "api_spec" {
+  template = var.openapi_spec_yaml_template
+
+  vars = merge(var.openapi_spec_variables, {
+    api_execution_role_arn = aws_iam_role.iam_for_api_gateway.arn
+    access_control_allow_origin_response_template = length(var.allowed_origins) > 0 ? "#set($origin = $input.params().header.get(\\\"Origin\\\"))\\n\\n#if(${join(" || ", formatlist("$origin == \\\"%s\\\"", var.allowed_origins))})\\n#set($context.responseOverride.header.Access-Control-Allow-Origin = $origin)\\n#end" : ""
+  })
+}
+
+
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.deployment_name} API"
   description = var.api_description
-  body        = var.openapi_spec_yaml
+  body        = data.template_file.api_spec.rendered
 }
 
 resource "aws_api_gateway_stage" "api_deployed_stage" {
@@ -11,12 +21,12 @@ resource "aws_api_gateway_stage" "api_deployed_stage" {
 }
 
 resource "aws_api_gateway_deployment" "api-deployment" {
-  depends_on = [var.openapi_spec_yaml]
+  depends_on = [data.template_file.api_spec]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
 
   variables = {
-    "api_spec_hash" = sha256(var.openapi_spec_yaml)
+    "api_spec_hash" = sha256(data.template_file.api_spec.rendered)
   }
 
   lifecycle {
